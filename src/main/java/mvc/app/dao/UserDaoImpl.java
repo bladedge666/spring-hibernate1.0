@@ -1,5 +1,7 @@
 package mvc.app.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -7,6 +9,8 @@ import javax.transaction.Transactional;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import mvc.app.model.User;
@@ -19,9 +23,12 @@ import mvc.app.model.User;
  *
  */
 @Repository("userDao")
-public class UserDaoImpl implements UserDao {
+@Transactional
+public class UserDaoImpl implements IUserDao {
 	private static final Logger logger = Logger.getAnonymousLogger();
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	private SessionFactory sessionFactory;
 
@@ -33,10 +40,28 @@ public class UserDaoImpl implements UserDao {
 	@Transactional
 	public List<User> listUsers() {
 		// get users from the db
-		@SuppressWarnings("unchecked")
-		List<User> listUser = (List<User>) sessionFactory.getCurrentSession().createQuery("select * from users").list();
+//		@SuppressWarnings("unchecked")
+//		List<User> listUser = (List<User>) sessionFactory.getCurrentSession().createQuery("from users").list();
+//		return listUser;
+		
+		
+		/**
+		 * The example below uses jdbcTemplate. However, the same effect can be obtained using Hibernate queries
+		 */
+		return jdbcTemplate.query("select * from users", new RowMapper<User>() {
+			
+			@Override
+			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+				User u = new User();
+				u.setId(rs.getInt("user_id"));
+				u.setEmail(rs.getString("email"));
+				u.setPassword(rs.getString("password"));
+				u.setUsername(rs.getString("username"));
+				
+				return u;
+			}
+		});
 
-		return listUser;
 	}
 	
 	
@@ -56,7 +81,18 @@ public class UserDaoImpl implements UserDao {
 
 	@Transactional
 	public User findById(int id) {
-		User user = (User) sessionFactory.getCurrentSession().load(User.class, new Integer(id));
+//		User user = (User) sessionFactory.getCurrentSession().load(User.class, new Integer(id));
+		User user = jdbcTemplate.queryForObject("select * from users where user_id=?", new Object[] {id}, new RowMapper<User>() {
+			@Override
+			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+				User user = new User();
+				user.setId(rs.getInt("user_id"));
+				user.setEmail(rs.getString("email"));
+				user.setPassword(rs.getString("password"));
+				user.setUsername(rs.getString("username"));
+				return user;
+			}
+		});
 		logger.info(">>> User loaded successfully, User details = " + user);
 		return user;
 	}

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import mvc.app.model.User;
-import mvc.app.service.UserService;
+import mvc.app.service.IUserService;
 
 @Controller
 @RequestMapping("/")
@@ -28,7 +28,7 @@ public class HomeController {
 	 */
 	//Field level
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
 	/*
 	@Autowired
 	public void setIUserService(IUserService userService) {
@@ -49,6 +49,7 @@ public class HomeController {
 	
 	@RequestMapping("/user/{id}")
 	public @ResponseBody String viewUser(@PathVariable("id") int id) {
+		System.out.println(">>> Id from view: " + id);
 		return userService.findById(id).toString();
 	}
 }

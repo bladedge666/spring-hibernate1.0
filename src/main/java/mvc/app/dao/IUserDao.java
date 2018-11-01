@@ -4,7 +4,7 @@ import java.util.List;
 
 import mvc.app.model.User;
 
-public interface UserDao {
+public interface IUserDao {
 
 	public List<User> listUsers();
 	public void save(User user); //Post

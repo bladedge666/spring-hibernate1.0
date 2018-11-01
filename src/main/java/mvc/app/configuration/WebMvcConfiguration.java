@@ -1,8 +1,9 @@
-package mvc.app.configuration;
+/*package mvc.app.configuration;
  
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -11,8 +12,11 @@ import org.springframework.web.servlet.view.JstlView;
  
 @Configuration
 @EnableWebMvc
-@ComponentScan("mvc.app")
-public class AppConfiguration {
+@ComponentScan(basePackages = "mvc.app")
+@PropertySource(value="application.properties")
+public class WebMvcConfiguration {
+	
+	
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -30,3 +34,5 @@ public class AppConfiguration {
     
 
 }
+
+*/

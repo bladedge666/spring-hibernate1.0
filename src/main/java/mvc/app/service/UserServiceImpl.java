@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import mvc.app.dao.UserDao;
+import mvc.app.dao.IUserDao;
 import mvc.app.model.User;
 /**
  * 
@@ -19,9 +19,9 @@ import mvc.app.model.User;
  */
 
 @Service("userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements IUserService{
 
-	private UserDao userDao;
+	private IUserDao userDao;
 
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService{
 	 * @param userDao
 	 */
 	@Autowired
-	public void setUserDao(UserDao userDao) {
+	public void setUserDao(IUserDao userDao) {
 		this.userDao = userDao;
 	}
 
