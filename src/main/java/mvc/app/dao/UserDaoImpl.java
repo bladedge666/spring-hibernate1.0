@@ -5,9 +5,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -30,12 +32,8 @@ public class UserDaoImpl implements IUserDao {
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
 	
-	private SessionFactory sessionFactory;
-
 	@Autowired
-	public UserDaoImpl(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+	private SessionFactory sessionFactory;
 
 	@Transactional
 	public List<User> listUsers() {
@@ -53,7 +51,7 @@ public class UserDaoImpl implements IUserDao {
 			@Override
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 				User u = new User();
-				u.setId(rs.getInt("user_id"));
+				u.setId(rs.getInt("id"));
 				u.setEmail(rs.getString("email"));
 				u.setPassword(rs.getString("password"));
 				u.setUsername(rs.getString("username"));
@@ -68,32 +66,36 @@ public class UserDaoImpl implements IUserDao {
 	@Transactional
 	public void save(User user) {
 		System.out.println("Going to save the user!");
-		sessionFactory.getCurrentSession().persist(user);
-//		System.out.println(">> User " + user.getUsername() + "saved to database successfully!!!");
-		logger.info("User saved successfully, User Details=" + user);
+		Session session = sessionFactory.getCurrentSession();
+		Transaction t = session.getTransaction();
+		t.begin();
+		session.persist(user);
+		t.commit();
+		System.out.println(">> User " + user.getUsername() + "saved to database successfully!!!");
 
-	}
-
-	@Autowired
-	public void setSessionFactory(SessionFactory sf) {
-		this.sessionFactory = sf;
 	}
 
 	@Transactional
 	public User findById(int id) {
-//		User user = (User) sessionFactory.getCurrentSession().load(User.class, new Integer(id));
-		User user = jdbcTemplate.queryForObject("select * from users where user_id=?", new Object[] {id}, new RowMapper<User>() {
+		User user = (User) sessionFactory.getCurrentSession().load(User.class, new Integer(id));
+
+		/* Uses JdbcTemplate
+		 * 
+		User user = jdbcTemplate.queryForObject("select * from users where id=?", new Object[] {id}, new RowMapper<User>() {
 			@Override
 			public User mapRow(ResultSet rs, int rowNum) throws SQLException {
 				User user = new User();
-				user.setId(rs.getInt("user_id"));
+				user.setId(rs.getInt("id"));
 				user.setEmail(rs.getString("email"));
 				user.setPassword(rs.getString("password"));
 				user.setUsername(rs.getString("username"));
 				return user;
 			}
 		});
+		*/
+		
 		logger.info(">>> User loaded successfully, User details = " + user);
+		
 		return user;
 	}
 

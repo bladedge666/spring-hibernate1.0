@@ -4,18 +4,18 @@
         "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
 	<session-factory>
-		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+	<!-- <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
 		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/mvc</property>
 		<property name="hibernate.connection.username">groot</property>
-		<property name="hibernate.connection.password">iamgroot</property>
+		<property name="hibernate.connection.password">iamgroot</property> -->
 		<property name="hibernate.connection.pool_size">2</property>
 		<property name="hibernate.current_session_context_class">thread</property>
 		<property name="hibernate.show_sql">true</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
 
 		<!-- Drop and re-create the database schema on startup -->
-		<property name="hbm2ddl.auto">create</property>
+		<property name="hbm2ddl.auto">update</property>
 		<!-- The mapping information of entities -->
-		<mapping class="mvc.app.model.User" />
+		<!-- mapping class="mvc.app.model.User" / -->
 	</session-factory>
 </hibernate-configuration>

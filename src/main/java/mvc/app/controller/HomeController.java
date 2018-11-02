@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import mvc.app.model.User;
@@ -36,15 +38,23 @@ public class HomeController {
 	}
 	*/
 	
-	@RequestMapping("/hello")
-	public @ResponseBody String hello() {
-		return "Hello There";
+	@RequestMapping("/")
+	public String hello() {
+		return "index";
+	}
+	
+	@RequestMapping(value="addUser", method=RequestMethod.POST)
+	public String addUser(@ModelAttribute("user") User user) {
+		userService.save(user);
+		return "redirect:/users";
 	}
 	
 	@RequestMapping("/users") // display all users
-	public @ResponseBody String listAllUsers(Model model) {
+	public String listAllUsers(Model model) {
 		List<User> users = userService.listUsers();
-		return users.toString();
+		model.addAttribute("users", users);
+		System.out.println(">>> Extracted the following users: " + users);
+		return "/users";
 	}
 	
 	@RequestMapping("/user/{id}")
@@ -52,4 +62,11 @@ public class HomeController {
 		System.out.println(">>> Id from view: " + id);
 		return userService.findById(id).toString();
 	}
+	
+	@RequestMapping(value="/users/{id}/delete", method=RequestMethod.GET)
+	public String deleteUser(@PathVariable("id") int id) {
+		userService.removeById(id);
+		return "redirect:/users";
+	}
+	
 }

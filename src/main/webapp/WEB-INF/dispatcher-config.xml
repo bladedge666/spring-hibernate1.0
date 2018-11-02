@@ -34,6 +34,10 @@
 		<property name="suffix" value=".jsp" />
 	</bean>
 
+<!-- 
+	This mapping is not required because i have loaded hibernate properties in sessionFactory
+	bean from hibernate.cfg.xml 
+
 	<bean id="hibernateProperties" class="java.util.Properties">
 		<constructor-arg index="0">
 			<props>
@@ -45,7 +49,7 @@
 			</props>
 		</constructor-arg>
 	</bean>
-
+-->
 
 	<!-- Defining DataSource which will be injected into SessionFactory -->
 
@@ -67,11 +71,12 @@
 		DataSource object -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-		<property name="packagesToScan" value="mvc.app.dao" />
+		<property name="packagesToScan" value="mvc.app" />
 		<property name="dataSource" ref="dataSource" />
-		<property name="hibernateProperties"
-			ref="hibernateProperties" />
-
+		<!-- <property name="hibernateProperties" ref="hibernateProperties" /> -->
+		<!-- The line below gave me trouble for so long -->
+		<property name="configLocation" value="classpath:hibernate.cfg.xml" />
+		
 	</bean>
 
 	<bean id="transactionManager"
