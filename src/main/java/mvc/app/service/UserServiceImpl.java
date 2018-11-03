@@ -36,7 +36,7 @@ public class UserServiceImpl implements IUserService{
 
 	/**
 	 * 
-	 * Why use @Transactinoal in the Service layer?
+	 * Why use @Transactional in the Service layer?
 	 * Ans: Multiple Daos might be used in this layer. So, to prevent inconsistency
 	 * https://stackoverflow.com/questions/3886909/where-should-transactional-be-place-service-layer-or-dao
 	 */

@@ -5,11 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -25,7 +21,6 @@ import mvc.app.model.User;
  *
  */
 @Repository("userDao")
-@Transactional
 public class UserDaoImpl implements IUserDao {
 	private static final Logger logger = Logger.getAnonymousLogger();
 
@@ -35,7 +30,7 @@ public class UserDaoImpl implements IUserDao {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	@Transactional
+	
 	public List<User> listUsers() {
 		// get users from the db
 //		@SuppressWarnings("unchecked")
@@ -63,19 +58,13 @@ public class UserDaoImpl implements IUserDao {
 	}
 	
 	
-	@Transactional
 	public void save(User user) {
 		System.out.println("Going to save the user!");
-		Session session = sessionFactory.getCurrentSession();
-		Transaction t = session.getTransaction();
-		t.begin();
-		session.persist(user);
-		t.commit();
-		System.out.println(">> User " + user.getUsername() + "saved to database successfully!!!");
+		sessionFactory.getCurrentSession().persist(user);
+		System.out.println(">> User " + user.getUsername() + " saved to database successfully!!!");
 
 	}
 
-	@Transactional
 	public User findById(int id) {
 		User user = (User) sessionFactory.getCurrentSession().load(User.class, new Integer(id));
 
@@ -99,7 +88,7 @@ public class UserDaoImpl implements IUserDao {
 		return user;
 	}
 
-	@Transactional
+	
 	public void removeById(int id) {
 		User user = (User) sessionFactory.getCurrentSession().load(User.class, new Integer(id));
 		if (null != user) {
@@ -108,7 +97,7 @@ public class UserDaoImpl implements IUserDao {
 		logger.info(">>> User deleted successfully, user details = " + user);
 	}
 
-	@Transactional
+	
 	public void update(User user) {
 		sessionFactory.getCurrentSession().update(user);
 		logger.info(">>> User updated successfully, User Details=" + user);

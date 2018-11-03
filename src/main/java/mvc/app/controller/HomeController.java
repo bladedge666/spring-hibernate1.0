@@ -63,8 +63,10 @@ public class HomeController {
 		return userService.findById(id).toString();
 	}
 	
-	@RequestMapping(value="/users/{id}/delete", method=RequestMethod.GET)
+	@RequestMapping(value="/user/{id}/delete", method=RequestMethod.GET)
 	public String deleteUser(@PathVariable("id") int id) {
+		System.out.println(">>>Delete request for user with id: " + id);
+		
 		userService.removeById(id);
 		return "redirect:/users";
 	}
